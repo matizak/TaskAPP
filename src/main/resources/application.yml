@@ -1,0 +1,22 @@
+server:
+  port : 8080
+  servlet:
+    session:
+      timeout: 30m
+spring:
+  devtools:
+    livereload:
+      port: 35730
+joinfaces:
+  primefaces:
+    theme: nova-colored
+feign:
+  client:
+    config:
+      task:
+        listOfServers: http://localhost:8081
+        connectTimeout: 30000
+        readTimeout: 10000
+        feignMaxAttempts: 5
+        feignMaxPeriod: 1
+        feignPeriods: 100

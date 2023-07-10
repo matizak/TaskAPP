@@ -1,0 +1,105 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+    <f:facet name="first">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
+        <link rel="stylesheet" href="https://unpkg.com/primeflex@^3/primeflex.css"/>
+        <meta name="apple-mobile-web-app-capable" content="yes"/>
+    </f:facet>
+    <title>Lista de Tareas</title>
+    <h:outputStylesheet library="webjars"
+                        name="font-awesome/6.3.0/css/all.min-jsf.css"/>
+    <h:outputStylesheet library="webjars"
+                        name="font-awesome/6.3.0/css/all.css"/>
+    <h:outputStylesheet library="webjars"
+                        name="font-awesome/6.3.0/css/v4-shims.min-jsf.css"/>
+</h:head>
+<h:body >
+    <h:form id="formLogin" >
+        <div class="ui-grid">
+            <div class="ui-grid-col-8">
+                <h1>Lista de Tareas</h1>
+                <p>Link para registrarse  <p:commandLink value="aquí"  actionListener="#{webBean.clearUserNew()}" title="Registrarse" onclick="PF('dialogRegistro').show();" /></p>
+            </div>
+            <div class="ui-grid-col-4">
+                    <div class="formgroup-inline">
+                        <div class="field">
+                            <p:inputText id="mail" placeholder="Correo" value="#{webBean.username}"/>
+                        </div>
+                        <div class="field">
+                            <p:password id="password" placeholder="Clave" value="#{webBean.password}" />
+                        </div>
+                        <p:commandButton id="acceder" ajax="true" value="Acceder" action="#{webBean.login()}"/>
+                    </div>
+                </div>
+        </div>
+
+        <div class="card">
+            <p:dataTable var="task" value="#{webBean.tasks}">
+                <p:column headerText="ID">
+                    <h:outputText value="#{task.id}" />
+                </p:column>
+
+                <p:column headerText="TÍTULO">
+                    <h:outputText value="#{task.title}" />
+                </p:column>
+
+                <p:column headerText="DESCRIPCIÓN">
+                    <h:outputText value="#{task.description}" />
+                </p:column>
+
+                <p:column headerText="ESTADO">
+                    <h:outputText value="#{task.status}" />
+                </p:column>
+
+                <p:column headerText="USUARIO">
+                    <h:outputText value="#{task.user.surname}" />
+                </p:column>
+            </p:dataTable>
+        </div>
+
+
+    </h:form>
+
+    <p:dialog header="Registro" widgetVar="dialogRegistro" resizable="false" draggable="false" position="center center"  modal="true" >
+        <h:form id="formNew" >
+        <div class="card">
+            <h5>Nuevo Usuario:</h5>
+            <div class="field grid">
+                <p:outputLabel for="nombre" styleClass="col-fixed" style="width:100px" value="Nombre: "/>
+                <div class="col">
+                    <p:inputText id="nombre" value="#{webBean.userDtoNew.name}"/>
+                </div>
+            </div>
+            <div class="field grid">
+                <p:outputLabel for="apellido" styleClass="col-fixed" style="width:100px" value="Apellido: "/>
+                <div class="col">
+                    <p:inputText id="apellido" value="#{webBean.userDtoNew.surname}"/>
+                </div>
+            </div>
+            <div class="field grid">
+                <p:outputLabel for="correo" styleClass="col-fixed" style="width:100px" value="Correo: "/>
+                <div class="col">
+                    <p:inputText id="correo" value="#{webBean.userDtoNew.username}" type="email"/>
+                </div>
+            </div>
+            <div class="field grid">
+                <p:outputLabel for="passwordNew" styleClass="col-fixed" style="width:100px" value="Clave: "/>
+                <div class="col">
+                    <p:password id="passwordNew" value="#{webBean.userDtoNew.password}"  />
+                </div>
+            </div>
+            <div class="field grid" >
+                <p:commandButton id="save" value="Guardar" icon="fa fa-save" actionListener="#{webBean.createUser()}"  />
+            </div>
+        </div>
+        </h:form>
+    </p:dialog>
+</h:body>
+
+</html>

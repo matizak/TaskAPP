@@ -1,0 +1,151 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+    <f:facet name="first">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
+        <link rel="stylesheet" href="https://unpkg.com/primeflex@^3/primeflex.css"/>
+        <meta name="apple-mobile-web-app-capable" content="yes"/>
+    </f:facet>
+    <title>Lista de Tareas</title>
+    <h:outputStylesheet library="webjars"
+                        name="font-awesome/6.3.0/css/all.min-jsf.css"/>
+    <h:outputStylesheet library="webjars"
+                        name="font-awesome/6.3.0/css/all.css"/>
+    <h:outputStylesheet library="webjars"
+                        name="font-awesome/6.3.0/css/v4-shims.min-jsf.css"/>
+</h:head>
+<h:body>
+    <h:form id="formDash">
+        <div class="ui-grid">
+            <div class="ui-grid-col-10"><h1>Lista de Tareas</h1></div>
+            <div class="ui-grid-col-2">
+                <div class="formgroup-inline">
+                    <div class="field">
+                        <h:outputText value="#{webBean.userDto.surname}, #{webBean.userDto.name}"/>
+                    </div>
+                    <div class="field">
+                        <p:commandLink value="Salir" action="#{webBean.logout}"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="ui-grid">
+                <div class="formgroup-inline">
+                    <div class="field">
+                        <p:commandButton icon="fa fa-plus" value="Nueva Tarea" actionListener="#{webBean.clearTask()}"
+                                         onclick="PF('dialogEditTask').show();" ajax="true" update="@form formEditTask"/>
+                    </div>
+                </div>
+            </div>
+            <p:dataTable var="task" value="#{webBean.tasks}">
+                <p:column headerText="ID">
+                    <h:outputText value="#{task.id}"/>
+                </p:column>
+
+                <p:column headerText="TÍTULO">
+                    <h:outputText value="#{task.title}"/>
+                </p:column>
+
+                <p:column headerText="DESCRIPCIÓN">
+                    <h:outputText value="#{task.description}"/>
+                </p:column>
+
+                <p:column headerText="ESTADO">
+                    <h:outputText value="#{task.status}"/>
+                </p:column>
+
+                <p:column headerText="USUARIO">
+                    <h:outputText value="#{task.user.surname}"/>
+                </p:column>
+
+                <p:column headerText="ACCIONES">
+                    <p:commandButton id="editar" p:title="Editar" icon="fa fa-edit" actionListener="#{webBean.loadTask()}"
+                                     onclick="PF('dialogEditTask').show();" ajax="true" update="@form formEditTask" >
+                        <f:param name="id" value="#{task.id}"/>
+                    </p:commandButton>
+                    <p:commandButton id="eliminar" p:title="Eliminar"
+                                     actionListener="#{webBean.deleteTask()}"
+                                      icon="fa fa-ban">
+                        <f:param name="id" value="#{task.id}"/>
+                    </p:commandButton>
+                </p:column>
+            </p:dataTable>
+        </div>
+    </h:form>
+    <p:dialog header="Nueva Tarea" widgetVar="dialogNewTask" resizable="false" draggable="false"
+              position="center center" modal="true">
+        <h:form id="formNewTask">
+            <div class="card">
+                <h5>Nueva Tarea:</h5>
+                <div class="field grid">
+                    <p:outputLabel for="titulo" styleClass="col-fixed" style="width:100px" value="Título: "/>
+                    <div class="col">
+                        <p:inputText id="titulo" value="#{webBean.taskDto.title}"/>
+                    </div>
+                </div>
+                <div class="field grid">
+                    <p:outputLabel for="descripcion" styleClass="col-fixed" style="width:100px" value="Descripción: "/>
+                    <div class="col">
+                        <p:inputTextarea id="descripcion" value="#{webBean.taskDto.description}"/>
+                    </div>
+                </div>
+                <div class="field grid">
+                    <p:outputLabel for="estado" styleClass="col-fixed" style="width:100px" value="Estado: "/>
+                    <div class="col">
+                        <p:selectOneMenu id="estado" value="#{webBean.status}" required="true" label="Estado" filter="true" >
+                            <f:selectItem  itemValue="0"  itemLabel="NINGUNO" noSelectionOption="true" />
+                            <f:selectItems value="#{webBean.selectItemsEstado}" />
+                            <p:ajax update="@this estado" />
+                        </p:selectOneMenu>
+                    </div>
+                </div>
+                <div class="field grid" >
+                    <p:commandButton id="save" value="Guardar" icon="fa fa-save" actionListener="#{webBean.createTask()}"  />
+                </div>
+            </div>
+        </h:form>
+    </p:dialog>
+
+    <p:dialog header="Editar Tarea" widgetVar="dialogEditTask" resizable="false" draggable="false"
+              position="center center" modal="true">
+        <h:form id="formEditTask">
+            <div class="card">
+                <h5>Nueva Tarea:</h5>
+                <div class="field grid">
+                    <p:outputLabel for="tituloEdit" styleClass="col-fixed" style="width:100px" value="Título: "/>
+                    <div class="col">
+                        <p:inputText id="tituloEdit" value="#{webBean.taskDto.title}"/>
+                    </div>
+                </div>
+                <div class="field grid">
+                    <p:outputLabel for="descripcionEdit" styleClass="col-fixed" style="width:100px" value="Descripción: "/>
+                    <div class="col">
+                        <p:inputTextarea id="descripcionEdit" value="#{webBean.taskDto.description}"/>
+                    </div>
+                </div>
+                <div class="field grid">
+                    <p:outputLabel for="estadoEdit" styleClass="col-fixed" style="width:100px" value="Estado: "/>
+                    <div class="col">
+                        <p:selectOneMenu id="estadoEdit" value="#{webBean.status}" required="true" label="Estado" filter="true" >
+                            <f:selectItem  itemValue="0"  itemLabel="NINGUNO" noSelectionOption="true" />
+                            <f:selectItems value="#{webBean.selectItemsEstado}" />
+                            <p:ajax update="@this estadoEdit" />
+                        </p:selectOneMenu>
+                    </div>
+                </div>
+                <div class="field grid" >
+                    <p:commandButton id="edit" value="Editar" icon="fa fa-save" actionListener="#{webBean.editTask()}"  />
+                </div>
+            </div>
+        </h:form>
+    </p:dialog>
+</h:body>
+
+</html>
